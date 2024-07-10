@@ -1,0 +1,52 @@
+#!/bin/bash
+
+show_help() {
+    echo "Usage: extend [OPTION]"
+    echo "Create or manage headless Wayland output for VNC."
+    echo
+    echo "Options:"
+    echo "  -h, --help    Show this help message and exit"
+    echo "  -r            Remove the first occurrence of a headless monitor"
+    echo "  -d            Display active monitors"
+    echo
+    echo "Without options, the script creates a headless output and starts wayvnc."
+}
+
+create_headless() {
+    hyprctl output create headless
+    wayvnc 0.0.0.0 &
+}
+
+remove_headless() {
+    headless_info=$(hyprctl monitors | grep -i "HEADLESS-" | head -n 1)
+    if [ -n "$headless_info" ]; then
+        headless_number=$(echo "$headless_info" | sed -n 's/.*HEADLESS-\([0-9]\+\).*/\1/p')
+        hyprctl output remove "HEADLESS-$headless_number"
+        echo "Removed HEADLESS-$headless_number"
+    else
+        echo "No HEADLESS monitor found"
+    fi
+}
+
+display_monitors() {
+    hyprctl monitors
+}
+
+case "$1" in
+    -h|--help)
+        show_help
+        ;;
+    -r|--remove)
+        remove_headless
+        ;;
+    -d|--display)
+        display_monitors
+        ;;
+    ""|--create)
+        create_headless
+        ;;
+    *)
+        echo "Invalid option. Use --help for usage information."
+        exit 1
+        ;;
+esac
