@@ -6,7 +6,9 @@ show_help() {
     echo
     echo "Options:"
     echo "  -h, --help    Show this help message and exit"
-    echo "  -r            Remove the first occurrence of a headless monitor"
+    echo "  -r, --remove [TARGET]   Remove a headless monitor. If TARGET is specified,"
+    echo "                          remove that specific monitor. Otherwise remove"
+    echo "                          the first occurrence of a headless monitor"
     echo "  -d            Display active monitors"
     echo
     echo "Without options, the script creates a headless output and starts wayvnc."
@@ -18,13 +20,22 @@ create_headless() {
 }
 
 remove_headless() {
-    headless_info=$(hyprctl monitors | grep -i "HEADLESS-" | head -n 1)
-    if [ -n "$headless_info" ]; then
-        headless_number=$(echo "$headless_info" | sed -n 's/.*HEADLESS-\([0-9]\+\).*/\1/p')
-        hyprctl output remove "HEADLESS-$headless_number"
-        echo "Removed HEADLESS-$headless_number"
+    if [ -n "$1" ]; then
+        if hyprctl monitors | grep -q "$1"; then
+            hyprctl output remove "$1"
+            echo "Removed $1"
+        else
+            echo "Monitor $1 not found"
+        fi
     else
-        echo "No HEADLESS monitor found"
+        headless_info=$(hyprctl monitors | grep -i "HEADLESS-" | head -n 1)
+        if [ -n "$headless_info" ]; then
+            headless_number=$(echo "$headless_info" | sed -n 's/.*HEADLESS-\([0-9]\+\).*/\1/p')
+            hyprctl output remove "HEADLESS-$headless_number"
+            echo "Removed HEADLESS-$headless_number"
+        else
+            echo "No HEADLESS monitor found"
+        fi
     fi
 }
 
@@ -37,7 +48,7 @@ case "$1" in
         show_help
         ;;
     -r|--remove)
-        remove_headless
+        remove_headless "$2"
         ;;
     -d|--display)
         display_monitors
