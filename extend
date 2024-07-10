@@ -24,6 +24,7 @@ remove_headless() {
         if hyprctl monitors | grep -q "$1"; then
             hyprctl output remove "$1"
             echo "Removed $1"
+            pkill wayvnc
         else
             echo "Monitor $1 not found"
         fi
@@ -33,6 +34,7 @@ remove_headless() {
             headless_number=$(echo "$headless_info" | sed -n 's/.*HEADLESS-\([0-9]\+\).*/\1/p')
             hyprctl output remove "HEADLESS-$headless_number"
             echo "Removed HEADLESS-$headless_number"
+            pkill wayvnc
         else
             echo "No HEADLESS monitor found"
         fi
