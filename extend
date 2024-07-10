@@ -5,11 +5,11 @@ show_help() {
     echo "Create or manage headless Wayland output for VNC."
     echo
     echo "Options:"
-    echo "  -h, --help    Show this help message and exit"
+    echo "  -h, --help              Show this help message and exit"
     echo "  -r, --remove [TARGET]   Remove a headless monitor. If TARGET is specified,"
     echo "                          remove that specific monitor. Otherwise remove"
     echo "                          the first occurrence of a headless monitor"
-    echo "  -d            Display active monitors"
+    echo "  -d                      Display active monitors"
     echo
     echo "Without options, the script creates a headless output and starts wayvnc."
 }
