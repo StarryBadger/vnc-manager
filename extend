@@ -17,6 +17,7 @@ show_help() {
 create_headless() {
     hyprctl output create headless
     wayvnc 0.0.0.0 &
+    ip route get 1.2.3.4 | awk '{print $7}'
 }
 
 remove_headless() {
